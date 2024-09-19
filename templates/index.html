@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crop Yield Prediction</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="flex flex-col md:flex-row">
+          <!-- Left column -->
+          <div class="md:w-1/2 bg-green-50 p-8">
+            <h1 class="text-4xl font-bold text-green-800 mb-6">
+              Crop Yield Prediction
+            </h1>
+            <img
+              src="{{ url_for('static', filename='yield.jpg') }}"
+              alt="Crop field"
+              class="rounded-lg object-cover shadow-md mb-6"
+            />
+            <p class="text-green-700 mb-4">
+              Our advanced crop yield prediction tool uses machine learning
+              algorithms to forecast agricultural output. By analyzing various
+              factors such as crop type, year, season, location, and
+              environmental conditions, we provide accurate yield estimates to
+              help farmers make informed decisions.
+            </p>
+            <p class="text-green-700">
+              Simply input your crop details and environmental factors in the
+              form on the right, and our system will generate a prediction based
+              on historical data and current trends in agriculture.
+            </p>
+          </div>
+
+          <!-- Right column (form) -->
+          <div class="md:w-1/2 p-8">
+            <h2 class="text-2xl font-bold text-green-600 mb-6">
+              Enter Crop Details
+            </h2>
+            <form action="/predict" method="POST" class="space-y-4">
+              <div>
+                <label
+                  for="Crop"
+                  class="block text-sm font-medium text-gray-700"
+                  >Crop:</label
+                >
+                <input
+                  type="text"
+                  name="Crop"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Crop_Year"
+                  class="block text-sm font-medium text-gray-700"
+                  >Crop Year:</label
+                >
+                <input
+                  type="number"
+                  name="Crop_Year"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Season"
+                  class="block text-sm font-medium text-gray-700"
+                  >Season:</label
+                >
+                <input
+                  type="text"
+                  name="Season"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="State"
+                  class="block text-sm font-medium text-gray-700"
+                  >State:</label
+                >
+                <input
+                  type="text"
+                  name="State"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Area"
+                  class="block text-sm font-medium text-gray-700"
+                  >Area (hectares):</label
+                >
+                <input
+                  type="number"
+                  step="any"
+                  name="Area"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Production"
+                  class="block text-sm font-medium text-gray-700"
+                  >Production (tons):</label
+                >
+                <input
+                  type="number"
+                  step="any"
+                  name="Production"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Annual_Rainfall"
+                  class="block text-sm font-medium text-gray-700"
+                  >Annual Rainfall (mm):</label
+                >
+                <input
+                  type="number"
+                  step="any"
+                  name="Annual_Rainfall"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Fertilizer"
+                  class="block text-sm font-medium text-gray-700"
+                  >Fertilizer (kg/ha):</label
+                >
+                <input
+                  type="number"
+                  step="any"
+                  name="Fertilizer"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="Pesticide"
+                  class="block text-sm font-medium text-gray-700"
+                  >Pesticide (kg/ha):</label
+                >
+                <input
+                  type="number"
+                  step="any"
+                  name="Pesticide"
+                  required
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <input
+                  type="submit"
+                  value="Predict Yield"
+                  class="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer text-lg font-semibold transition duration-300"
+                />
+              </div>
+            </form>
+
+            {% if prediction_text %}
+            <div
+              class="mt-6 text-center text-green-600 bg-green-50 p-4 rounded-lg"
+            >
+              <h3 class="font-bold">Prediction Result:</h3>
+              <p>{{ prediction_text }}</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
