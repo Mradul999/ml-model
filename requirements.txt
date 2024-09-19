@@ -3,6 +3,5 @@ Gunicorn
 Flask-SQLAlchemy
 pandas
 numpy
-os
-pickle
+
 
