@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, request, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
 import numpy as np
@@ -20,7 +19,6 @@ with open(encoder_save_path, 'rb') as encoder_file:
 
 # Flask web app
 app = Flask(__name__)
-CORS(app)  # This will enable CORS for all routes
 
 # Configure the SQLite database, relative to the app instance folder
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
@@ -42,6 +40,11 @@ class KeyValue(db.Model):
 with app.app_context():
     db.create_all()
 
+# Route to render the HTML form
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 # Function to handle unseen labels in categorical columns
 def handle_unseen_labels(encoder, label):
     if label not in encoder.classes_:
@@ -54,8 +57,8 @@ def handle_unseen_labels(encoder, label):
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Retrieve input data from the JSON request
-        data = request.json
+        # Retrieve input data from the form
+        data = request.form.to_dict()
         
         # Convert the input data to a DataFrame
         input_data = pd.DataFrame([data])
@@ -74,20 +77,12 @@ def predict():
         # Round the prediction to a reasonable number of decimal places
         predicted_yield = round(prediction[0], 2)
 
-        # Return the prediction as JSON
-        return jsonify({
-            'success': True,
-            'predicted_yield': predicted_yield,
-            'message': f'Predicted Crop Yield: {predicted_yield} tons'
-        })
+        # Display the prediction on the page
+        return render_template('index.html', prediction_text=f'Predicted Crop Yield: {predicted_yield} tons')
 
     except Exception as e:
         print(f"Error occurred: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e),
-            'message': "An error occurred during prediction."
-        }), 400
+        return render_template('index.html', prediction_text="An error occurred during prediction.")
 
 if __name__ == "__main__":
     app.run(debug=True)
